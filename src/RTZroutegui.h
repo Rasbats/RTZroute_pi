@@ -47,8 +47,14 @@ class m_Dialog : public wxDialog
 		wxStaticText* m_staticText3311111;
 		wxStaticText* m_staticText7;
 		wxStaticLine* m_staticline1;
+		wxStaticLine* m_staticline3;
 		wxButton* m_button3111;
-		wxStaticText* m_staticText71;
+		wxStaticText* m_staticText15111;
+		wxButton* m_button31112;
+		wxButton* m_button31113;
+		wxButton* m_button311111;
+		wxStaticLine* m_staticline7;
+		wxButton* m_button311131;
 		wxPanel* m_panel1;
 		wxStaticText* m_staticText11;
 		wxStaticText* m_staticText81;
@@ -58,23 +64,27 @@ class m_Dialog : public wxDialog
 		wxStaticText* m_staticText8111;
 		wxButton* m_button31111;
 		wxButton* m_button311112;
-		wxButton* m_button311111;
 
 		// Virtual event handlers, overide them in your derived class
 		virtual void OnClose( wxCloseEvent& event ) { event.Skip(); }
 		virtual void OnTestFunction( wxCommandEvent& event ) { event.Skip(); }
 		virtual void OnEditGPX( wxCommandEvent& event ) { event.Skip(); }
+		virtual void OnImport( wxCommandEvent& event ) { event.Skip(); }
+		virtual void OnExport( wxCommandEvent& event ) { event.Skip(); }
+		virtual void OnGenerateRadiusGPX( wxCommandEvent& event ) { event.Skip(); }
+		virtual void OnValidate( wxCommandEvent& event ) { event.Skip(); }
 		virtual void GetWaypointData( wxCommandEvent& event ) { event.Skip(); }
+		virtual void OnUpdateTurn( wxCommandEvent& event ) { event.Skip(); }
 		virtual void SetRadiusValue( wxScrollEvent& event ) { event.Skip(); }
 		virtual void OnUpdate( wxCommandEvent& event ) { event.Skip(); }
 		virtual void OnSaveGPX( wxCommandEvent& event ) { event.Skip(); }
-		virtual void OnPSGPX( wxCommandEvent& event ) { event.Skip(); }
 
 
 	public:
 		wxButton* m_buttonTest;
 		wxChoice* m_TurnStep;
 		wxTextCtrl* m_Route;
+		wxChoice* m_choiceSchema;
 		wxListBox* m_listBoxWaypoints;
 		wxStaticBoxSizer* sbSizer1;
 		wxGridSizer* gSizer1;
@@ -84,6 +94,7 @@ class m_Dialog : public wxDialog
 		wxSlider* m_sliderRadius;
 		wxTextCtrl* m_nextCourse;
 		wxTextCtrl* m_nextDistance;
+		wxTextCtrl* m_textCtrlShowResult;
 
 		m_Dialog( wxWindow* parent, wxWindowID id = wxID_ANY, const wxString& title = wxT("RTZroute"), const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxDefaultSize, long style = wxDEFAULT_DIALOG_STYLE|wxRESIZE_BORDER );
 		~m_Dialog();

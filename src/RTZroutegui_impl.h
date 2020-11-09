@@ -38,13 +38,29 @@
 
 #include "NavFunc.h"
 #include "tinyxml.h"
+#include "tinyxml2.h"
 
 #include <list>
 #include <vector>
 #include <wx/slider.h>
 #include <wx/listbox.h>
+#include <string.h>
+#include <wx/arrstr.h>
+#include <wx/textfile.h>
+#include <wx/stdpaths.h>
+#include <iostream>
+#include <fstream>
+#include <wx/tokenzr.h>
+#include <wx/utils.h> 
+#include "load-grammar-sax.h"
+#include "load-grammar-dom.h"
+#include <wx/wfstream.h>
+#include <wx/txtstrm.h>
+#include "tinyxml2.h"
+
 
 using namespace std;
+
 
 template <typename T> class Vector2D
 {
@@ -105,9 +121,48 @@ public:
 	}
 };
 
+static const wxChar *FILETYPESEXPORT = _T(
+	"RTZ 1.0 files(*.rtz) | *.rtz |"
+	"RTZ 1.1 files(*.rtz) | *.rtz |"
+	" Transas .rt3 (*.rt3) | *.rt3 |"
+	" Transas .rt4 (*.rt4) | *.rt4 |"
+	" Sperry Visonmaster (*.route) | *.route"
+	"All files|*.*"
+);
+static const wxChar *FILETYPESIMPORT = _T(
+	"RTZ 1.0 files(*.rtz) | *.rtz |"
+	"RTZ 1.1 files(*.rtz) | *.rtz |"
+	" Transas .rt3 (*.rt3) | *.rt3 |"
+	" Transas .rt4 (*.rt4) | *.rt4 |"
+	" Sperry Visonmaster (*.route) | *.route"
+	"All files|*.*"
+);
+
+
+
 
 class RTZroute_pi;
 class Position;
+
+class waypoint
+{
+public:
+	wxString id;
+	wxString name;
+	wxString radius;
+
+	wxString lat, lon;
+
+};
+
+class route
+{
+public:
+
+	wxString routeName;
+	std::vector<waypoint> waypoints;
+	wxArrayString m_arrayPoints;
+};
 
 class Dlg : public m_Dialog
 {
@@ -120,51 +175,84 @@ public:
 
 	void SetRadiusValue(wxScrollEvent& event);
 	
-	void OnTestFunction(wxCommandEvent& event);
+	void OnEditGPX(wxCommandEvent& event);
+	void OnImport(wxCommandEvent& event);
+	void OnExport(wxCommandEvent& event);
+	bool ImportGPX(wxString myFile);
+	int ImportRTZ(wxString myFile);
+	void ExportGPX(wxString myFile);
+	int ExportRTZ(wxString myFile, wxString myFileName);
+
+	void OnValidate(wxCommandEvent& event);
+	void ValidateRTZ(string schema, string rtz);
+
 	void GetPivotInfo(wxRealPoint rtt, wxRealPoint rtp, wxRealPoint rtn, double radius, wxRealPoint &rtpivot, double &internalAngle,  wxString &portstbd, wxRealPoint &pb, wxRealPoint &pa);
 	void CalculateCurvePoints(wxRealPoint ac1, wxRealPoint ac2, wxRealPoint pivotPoint, double radius, double internalAngle, wxString portstbd);
+	void OnGenerateRadiusGPX(wxCommandEvent& event);
 
+	void OnUpdateTurn(wxCommandEvent& event);
 
-	    void OnPSGPX( wxCommandEvent& event );	
-		void OnEditGPX(wxCommandEvent& event);
-		void OnUpdate(wxCommandEvent& event);
-		void OnSaveGPX(wxCommandEvent& event);
-		bool OpenXML();
-		void Update();
-		void SaveGPX();
-		
-		vector<Position> my_positions;
-		vector<Position> my_points;
+	void OnSaveGPX(wxCommandEvent& event);
+	bool OpenXML();
+	void Update();
+	void SaveGPX();
+	// From RTZassist
+	bool ReadGPX();
+	void ReadRTZ(string schema, string rtz);
+	int DomExportGPX();
+	int ExportRT4();
 
-        void Calculate( wxCommandEvent& event, bool Export, int Pattern );
-        void Addpoint(TiXmlElement* Route, wxString ptlat, wxString ptlon, wxString ptname, wxString ptsym, wxString pttype, wxString ptviz, wxString ptradius);
+	vector<Position> my_positions;
+	vector<Position> my_points;
+	vector<Position> draftPositions;
 
-		void FillWaypointListbox();
-		void GetWaypointData(wxCommandEvent& event);
+	void Calculate(wxCommandEvent& event, bool Export, int Pattern);
+	void Addpoint(TiXmlElement* Route, wxString ptlat, wxString ptlon, wxString ptname, wxString ptsym, wxString pttype, wxString ptviz, wxString ptradius);
 
-		wxString rte_start;
-	    wxString rte_end;
+	void FillWaypointListbox();
+	void ClearTextboxes();
+	void SetRTZversion(wxString version);
+	void GetWaypointData(wxCommandEvent& event);
 
-		double testX[16], testY[16];
-		int wpt_num;		
-		bool testing;
-		
+	wxString rte_start;
+	wxString rte_end;
+
+	double testX[16], testY[16];
+	int wpt_num;
+	wxString filename;
+
+	bool XML_SUCCESS;
+	wxString ERROR_MESSAGE;
+	wxString rtz_version;
 
 private:
-	    void OnClose( wxCloseEvent& event );
-        double lat1, lon1, lat2, lon2;
-        bool error_found;
-        bool dbg;
 
-		wxString     m_gpx_path;	
-		//double radius;
-		wxRealPoint ac1, ac2, pivotPoint;
-		wxString portstbd;
-		double internal_angle;
-		double distanceToWaypoint;
-		int turnStep;
-		wxString mySpeed;
-		double turnRadius;
+	void OnClose(wxCloseEvent& event);
+	double lat1, lon1, lat2, lon2;
+	bool error_found;
+	bool dbg;
+
+	wxString     m_gpx_path;
+	//double radius;
+	wxRealPoint ac1, ac2, pivotPoint;
+	wxString portstbd;
+	double internal_angle;
+	double distanceToWaypoint;
+	int turnStep;
+	wxString mySpeed;
+	double turnRadius;
+
+
+	wxArrayString waypointsList;
+
+	tinyxml2::XMLNode* route_info;
+	tinyxml2::XMLNode* waypoints;
+	tinyxml2::XMLNode* waypt;
+	tinyxml2::XMLNode* schedules;
+	tinyxml2::XMLNode* schedule;
+
+	route myRoute;
+	vector<waypoint> m_waypointList;
 };
 
 
@@ -175,10 +263,13 @@ public:
     wxString lat, lon, wpt_num, viz;
     Position *prev, *next; /* doubly linked circular list of positions */
     int routepoint;
-	double radius;
+	wxString routeName;
+	wxString radius;
+	wxString wpId;
 	wxString wpName;
 	wxString wpSym;
 	wxString planned_speed;
+
 	
 };
 

@@ -15,7 +15,7 @@ SET(TITLE_NAME RTZroute)
 SET(CPACK_PACKAGE_CONTACT "Mike Rossiter")
 
 SET(VERSION_MAJOR "0")
-SET(VERSION_MINOR "1")
+SET(VERSION_MINOR "3")
 
 SET(NAME_SUFFIX "ov50")
 
@@ -32,6 +32,17 @@ OPTION(RTZroute_USE_SVG "Use SVG graphics" ON)
 
 INCLUDE("cmake/PluginConfigure.cmake")
 
+IF(WIN32)
+	SET(xercesc ${CMAKE_SOURCE_DIR}/src/xercesc)
+	SET(xercesc "${PARENT}.lib")
+
+	LINK_DIRECTORIES(${CMAKE_SOURCE_DIR}/src/xercesc)
+	INCLUDE_DIRECTORIES(${CMAKE_SOURCE_DIR}/src/xercesc)
+	INCLUDE_DIRECTORIES(${CMAKE_SOURCE_DIR}/src/xercesc/include)
+	
+ENDIF(WIN32)
+
+
 IF(RTZroute_USE_SVG)
   ADD_DEFINITIONS(-DRTZroute_USE_SVG)
 ENDIF(RTZroute_USE_SVG)
@@ -45,6 +56,10 @@ SET(SRC_RTZroute
 	    src/RTZroutegui.cpp
 	    src/RTZroutegui_impl.cpp
 	    src/RTZroutegui_impl.h
+		src/load-grammar-dom.cpp
+		src/load-grammar-dom.h
+		src/load-grammar-sax.cpp
+		src/load-grammar-sax.h
 	    src/NavFunc.h
 	    src/NavFunc.cpp
 		src/ocpn_plugin.h
@@ -52,12 +67,19 @@ SET(SRC_RTZroute
         src/tinyxmlerror.cpp
         src/tinyxmlparser.cpp
         src/tinyxml.h
+		src/tinyxml2.cpp
+		src/tinyxml2.h
 	)
 
 
 ADD_LIBRARY(${PACKAGE_NAME} SHARED ${SRC_RTZroute})
 
 ADD_DEFINITIONS(-DTIXML_USE_STL)
+
+IF(WIN32)
+	FIND_LIBRARY(xerces-c_3 ${CMAKE_SOURCE_DIR}/src/xercesc)
+	TARGET_LINK_LIBRARIES(${PACKAGE_NAME} xerces-c_3)
+ENDIF(WIN32)
 
 INCLUDE("cmake/PluginInstall.cmake")
 INCLUDE("cmake/PluginLocalization.cmake")

@@ -25,7 +25,7 @@ m_Dialog::m_Dialog( wxWindow* parent, wxWindowID id, const wxString& title, cons
 
 	m_staticText1511 = new wxStaticText( m_panel0, wxID_ANY, wxT("Options"), wxDefaultPosition, wxDefaultSize, 0 );
 	m_staticText1511->Wrap( -1 );
-	m_staticText1511->SetFont( wxFont( 20, wxFONTFAMILY_SWISS, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_BOLD, false, wxT("Arial") ) );
+	m_staticText1511->SetFont( wxFont( 16, wxFONTFAMILY_SWISS, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_BOLD, false, wxT("Arial") ) );
 
 	bSizer1311->Add( m_staticText1511, 0, wxALIGN_CENTER_HORIZONTAL|wxALL, 5 );
 
@@ -46,7 +46,7 @@ m_Dialog::m_Dialog( wxWindow* parent, wxWindowID id, const wxString& title, cons
 	wxBoxSizer* bSizer14111111;
 	bSizer14111111 = new wxBoxSizer( wxHORIZONTAL );
 
-	m_staticText32111111 = new wxStaticText( m_panel0, wxID_ANY, wxT("Turn with"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_staticText32111111 = new wxStaticText( m_panel0, wxID_ANY, wxT("Turn with       "), wxDefaultPosition, wxDefaultSize, 0 );
 	m_staticText32111111->Wrap( -1 );
 	bSizer14111111->Add( m_staticText32111111, 0, wxALIGN_RIGHT|wxALL, 5 );
 
@@ -66,11 +66,11 @@ m_Dialog::m_Dialog( wxWindow* parent, wxWindowID id, const wxString& title, cons
 	wxBoxSizer* bSizer14;
 	bSizer14 = new wxBoxSizer( wxHORIZONTAL );
 
-	m_staticText7 = new wxStaticText( m_panel0, wxID_ANY, wxT("Route / GPX   \nfile name     "), wxDefaultPosition, wxDefaultSize, 0 );
+	m_staticText7 = new wxStaticText( m_panel0, wxID_ANY, wxT("Route name :"), wxDefaultPosition, wxDefaultSize, 0 );
 	m_staticText7->Wrap( -1 );
 	bSizer14->Add( m_staticText7, 0, wxALL, 5 );
 
-	m_Route = new wxTextCtrl( m_panel0, wxID_ANY, wxT("RTZ"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_Route = new wxTextCtrl( m_panel0, wxID_ANY, wxT("myRoute"), wxDefaultPosition, wxDefaultSize, 0 );
 	bSizer14->Add( m_Route, 0, wxALL, 5 );
 
 
@@ -79,15 +79,49 @@ m_Dialog::m_Dialog( wxWindow* parent, wxWindowID id, const wxString& title, cons
 	m_staticline1 = new wxStaticLine( m_panel0, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxLI_HORIZONTAL );
 	bSizer1311->Add( m_staticline1, 0, wxEXPAND | wxALL, 5 );
 
+	wxBoxSizer* bSizer13;
+	bSizer13 = new wxBoxSizer( wxVERTICAL );
+
+	wxString m_choiceSchemaChoices[] = { wxT("RTZ_Schema_version_1_0"), wxT("RTZ_Schema_version_1_1"), wxEmptyString };
+	int m_choiceSchemaNChoices = sizeof( m_choiceSchemaChoices ) / sizeof( wxString );
+	m_choiceSchema = new wxChoice( m_panel0, wxID_ANY, wxDefaultPosition, wxDefaultSize, m_choiceSchemaNChoices, m_choiceSchemaChoices, 0 );
+	m_choiceSchema->SetSelection( 0 );
+	bSizer13->Add( m_choiceSchema, 0, wxALL, 5 );
+
+	m_staticline3 = new wxStaticLine( m_panel0, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxLI_HORIZONTAL );
+	bSizer13->Add( m_staticline3, 0, wxEXPAND | wxALL, 5 );
+
+
+	bSizer1311->Add( bSizer13, 1, wxEXPAND, 5 );
+
 	wxBoxSizer* bSizer71;
 	bSizer71 = new wxBoxSizer( wxVERTICAL );
 
 	m_button3111 = new wxButton( m_panel0, wxID_ANY, wxT("Edit GPX"), wxDefaultPosition, wxDefaultSize, 0 );
-	bSizer71->Add( m_button3111, 0, wxALIGN_CENTER_HORIZONTAL|wxALL, 5 );
+	m_button3111->Hide();
 
-	m_staticText71 = new wxStaticText( m_panel0, wxID_ANY, wxT("... Edit an existing GPX file\n\n... update the waypoint information\n    for a radius turn\n... save the waypoint data in a GPX file\n... generate a GPX with the added\n    positions for the turns"), wxDefaultPosition, wxDefaultSize, 0 );
-	m_staticText71->Wrap( -1 );
-	bSizer71->Add( m_staticText71, 0, wxALL, 5 );
+	bSizer71->Add( m_button3111, 0, wxALIGN_CENTER_HORIZONTAL|wxALL|wxEXPAND, 5 );
+
+	m_staticText15111 = new wxStaticText( m_panel0, wxID_ANY, wxT("Files"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_staticText15111->Wrap( -1 );
+	m_staticText15111->SetFont( wxFont( 16, wxFONTFAMILY_SWISS, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_BOLD, false, wxT("Arial") ) );
+
+	bSizer71->Add( m_staticText15111, 0, wxALIGN_CENTER_HORIZONTAL|wxALL, 5 );
+
+	m_button31112 = new wxButton( m_panel0, wxID_ANY, wxT("Import"), wxDefaultPosition, wxDefaultSize, 0 );
+	bSizer71->Add( m_button31112, 0, wxALL|wxEXPAND, 5 );
+
+	m_button31113 = new wxButton( m_panel0, wxID_ANY, wxT("Export"), wxDefaultPosition, wxDefaultSize, 0 );
+	bSizer71->Add( m_button31113, 0, wxALL|wxEXPAND, 5 );
+
+	m_button311111 = new wxButton( m_panel0, wxID_ANY, wxT("         Export GPX with radius turns"), wxDefaultPosition, wxDefaultSize, 0 );
+	bSizer71->Add( m_button311111, 0, wxALL, 5 );
+
+	m_staticline7 = new wxStaticLine( m_panel0, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxLI_HORIZONTAL );
+	bSizer71->Add( m_staticline7, 0, wxEXPAND | wxALL, 5 );
+
+	m_button311131 = new wxButton( m_panel0, wxID_ANY, wxT("Validate RTZ"), wxDefaultPosition, wxDefaultSize, 0 );
+	bSizer71->Add( m_button311131, 0, wxALL|wxEXPAND, 5 );
 
 
 	bSizer1311->Add( bSizer71, 0, wxEXPAND, 5 );
@@ -110,12 +144,12 @@ m_Dialog::m_Dialog( wxWindow* parent, wxWindowID id, const wxString& title, cons
 
 	m_staticText11 = new wxStaticText( m_panel1, wxID_ANY, wxT("Waypoints"), wxDefaultPosition, wxDefaultSize, 0 );
 	m_staticText11->Wrap( -1 );
-	m_staticText11->SetFont( wxFont( 20, wxFONTFAMILY_SWISS, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_BOLD, false, wxT("Arial") ) );
+	m_staticText11->SetFont( wxFont( 16, wxFONTFAMILY_SWISS, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_BOLD, false, wxT("Arial") ) );
 
 	bSizer12->Add( m_staticText11, 0, wxALL, 5 );
 
 	m_listBoxWaypoints = new wxListBox( m_panel1, wxID_ANY, wxDefaultPosition, wxDefaultSize, 0, NULL, wxLB_ALWAYS_SB|wxLB_SINGLE );
-	bSizer12->Add( m_listBoxWaypoints, 5, wxALL|wxEXPAND, 5 );
+	bSizer12->Add( m_listBoxWaypoints, 6, wxALL|wxEXPAND, 5 );
 
 	sbSizer1 = new wxStaticBoxSizer( new wxStaticBox( m_panel1, wxID_ANY, wxT("Waypoint Data") ), wxVERTICAL );
 
@@ -125,21 +159,21 @@ m_Dialog::m_Dialog( wxWindow* parent, wxWindowID id, const wxString& title, cons
 	m_staticText81->Wrap( -1 );
 	gSizer1->Add( m_staticText81, 0, wxALL, 5 );
 
-	m_wptLat = new wxTextCtrl( sbSizer1->GetStaticBox(), wxID_ANY, wxT("1.0"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_wptLat = new wxTextCtrl( sbSizer1->GetStaticBox(), wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
 	gSizer1->Add( m_wptLat, 0, wxALIGN_CENTER|wxALIGN_RIGHT, 0 );
 
 	m_staticText811 = new wxStaticText( sbSizer1->GetStaticBox(), wxID_ANY, wxT("Longitude"), wxDefaultPosition, wxDefaultSize, 0 );
 	m_staticText811->Wrap( -1 );
 	gSizer1->Add( m_staticText811, 0, wxALL, 5 );
 
-	m_wptLon = new wxTextCtrl( sbSizer1->GetStaticBox(), wxID_ANY, wxT("1.0"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_wptLon = new wxTextCtrl( sbSizer1->GetStaticBox(), wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
 	gSizer1->Add( m_wptLon, 0, wxALL, 5 );
 
 	m_staticText812 = new wxStaticText( sbSizer1->GetStaticBox(), wxID_ANY, wxT("Turn radius (nm)     "), wxDefaultPosition, wxDefaultSize, 0 );
 	m_staticText812->Wrap( -1 );
 	gSizer1->Add( m_staticText812, 0, wxALL, 5 );
 
-	m_getTurnRadius = new wxTextCtrl( sbSizer1->GetStaticBox(), wxID_ANY, wxT("0.0"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_getTurnRadius = new wxTextCtrl( sbSizer1->GetStaticBox(), wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxTE_PROCESS_ENTER );
 	gSizer1->Add( m_getTurnRadius, 0, wxALL, 5 );
 
 
@@ -189,16 +223,29 @@ m_Dialog::m_Dialog( wxWindow* parent, wxWindowID id, const wxString& title, cons
 	bSizer18 = new wxBoxSizer( wxHORIZONTAL );
 
 	m_button31111 = new wxButton( m_panel1, wxID_ANY, wxT("Update"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_button31111->Hide();
+
 	bSizer18->Add( m_button31111, 0, wxALL, 5 );
 
 	m_button311112 = new wxButton( m_panel1, wxID_ANY, wxT("Save"), wxDefaultPosition, wxDefaultSize, 0 );
-	bSizer18->Add( m_button311112, 0, wxALL, 5 );
+	m_button311112->Hide();
 
-	m_button311111 = new wxButton( m_panel1, wxID_ANY, wxT("Generate GPX"), wxDefaultPosition, wxDefaultSize, 0 );
-	bSizer18->Add( m_button311111, 0, wxALL, 5 );
+	bSizer18->Add( m_button311112, 0, wxALL, 5 );
 
 
 	bSizer12->Add( bSizer18, 0, wxEXPAND, 5 );
+
+	wxBoxSizer* bSizer121;
+	bSizer121 = new wxBoxSizer( wxVERTICAL );
+
+	m_textCtrlShowResult = new wxTextCtrl( m_panel1, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
+	m_textCtrlShowResult->SetForegroundColour( wxSystemSettings::GetColour( wxSYS_COLOUR_WINDOWTEXT ) );
+	m_textCtrlShowResult->SetBackgroundColour( wxSystemSettings::GetColour( wxSYS_COLOUR_BTNFACE ) );
+
+	bSizer121->Add( m_textCtrlShowResult, 0, wxEXPAND, 5 );
+
+
+	bSizer12->Add( bSizer121, 1, wxEXPAND, 5 );
 
 
 	m_panel1->SetSizer( bSizer12 );
@@ -220,7 +267,12 @@ m_Dialog::m_Dialog( wxWindow* parent, wxWindowID id, const wxString& title, cons
 	this->Connect( wxEVT_CLOSE_WINDOW, wxCloseEventHandler( m_Dialog::OnClose ) );
 	m_buttonTest->Connect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( m_Dialog::OnTestFunction ), NULL, this );
 	m_button3111->Connect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( m_Dialog::OnEditGPX ), NULL, this );
+	m_button31112->Connect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( m_Dialog::OnImport ), NULL, this );
+	m_button31113->Connect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( m_Dialog::OnExport ), NULL, this );
+	m_button311111->Connect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( m_Dialog::OnGenerateRadiusGPX ), NULL, this );
+	m_button311131->Connect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( m_Dialog::OnValidate ), NULL, this );
 	m_listBoxWaypoints->Connect( wxEVT_COMMAND_LISTBOX_SELECTED, wxCommandEventHandler( m_Dialog::GetWaypointData ), NULL, this );
+	m_getTurnRadius->Connect( wxEVT_COMMAND_TEXT_UPDATED, wxCommandEventHandler( m_Dialog::OnUpdateTurn ), NULL, this );
 	m_sliderRadius->Connect( wxEVT_SCROLL_TOP, wxScrollEventHandler( m_Dialog::SetRadiusValue ), NULL, this );
 	m_sliderRadius->Connect( wxEVT_SCROLL_BOTTOM, wxScrollEventHandler( m_Dialog::SetRadiusValue ), NULL, this );
 	m_sliderRadius->Connect( wxEVT_SCROLL_LINEUP, wxScrollEventHandler( m_Dialog::SetRadiusValue ), NULL, this );
@@ -232,7 +284,6 @@ m_Dialog::m_Dialog( wxWindow* parent, wxWindowID id, const wxString& title, cons
 	m_sliderRadius->Connect( wxEVT_SCROLL_CHANGED, wxScrollEventHandler( m_Dialog::SetRadiusValue ), NULL, this );
 	m_button31111->Connect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( m_Dialog::OnUpdate ), NULL, this );
 	m_button311112->Connect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( m_Dialog::OnSaveGPX ), NULL, this );
-	m_button311111->Connect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( m_Dialog::OnPSGPX ), NULL, this );
 }
 
 m_Dialog::~m_Dialog()
@@ -241,7 +292,12 @@ m_Dialog::~m_Dialog()
 	this->Disconnect( wxEVT_CLOSE_WINDOW, wxCloseEventHandler( m_Dialog::OnClose ) );
 	m_buttonTest->Disconnect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( m_Dialog::OnTestFunction ), NULL, this );
 	m_button3111->Disconnect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( m_Dialog::OnEditGPX ), NULL, this );
+	m_button31112->Disconnect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( m_Dialog::OnImport ), NULL, this );
+	m_button31113->Disconnect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( m_Dialog::OnExport ), NULL, this );
+	m_button311111->Disconnect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( m_Dialog::OnGenerateRadiusGPX ), NULL, this );
+	m_button311131->Disconnect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( m_Dialog::OnValidate ), NULL, this );
 	m_listBoxWaypoints->Disconnect( wxEVT_COMMAND_LISTBOX_SELECTED, wxCommandEventHandler( m_Dialog::GetWaypointData ), NULL, this );
+	m_getTurnRadius->Disconnect( wxEVT_COMMAND_TEXT_UPDATED, wxCommandEventHandler( m_Dialog::OnUpdateTurn ), NULL, this );
 	m_sliderRadius->Disconnect( wxEVT_SCROLL_TOP, wxScrollEventHandler( m_Dialog::SetRadiusValue ), NULL, this );
 	m_sliderRadius->Disconnect( wxEVT_SCROLL_BOTTOM, wxScrollEventHandler( m_Dialog::SetRadiusValue ), NULL, this );
 	m_sliderRadius->Disconnect( wxEVT_SCROLL_LINEUP, wxScrollEventHandler( m_Dialog::SetRadiusValue ), NULL, this );
@@ -253,6 +309,5 @@ m_Dialog::~m_Dialog()
 	m_sliderRadius->Disconnect( wxEVT_SCROLL_CHANGED, wxScrollEventHandler( m_Dialog::SetRadiusValue ), NULL, this );
 	m_button31111->Disconnect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( m_Dialog::OnUpdate ), NULL, this );
 	m_button311112->Disconnect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( m_Dialog::OnSaveGPX ), NULL, this );
-	m_button311111->Disconnect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( m_Dialog::OnPSGPX ), NULL, this );
 
 }
