@@ -94,7 +94,7 @@ public:
 	  
 
 	  wxWindow         *m_parent_window;
-	  
+	  wxBitmap			m_panelBitmap;
 private:
       
 	  Dlg               *m_pDialog;
@@ -111,7 +111,7 @@ private:
 
 	  bool             m_bRTZrouteShowIcon;
 	  bool             m_bShowRTZroute;
-	  wxBitmap			m_panelBitmap;
+	  
 
 };
 

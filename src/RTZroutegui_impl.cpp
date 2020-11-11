@@ -54,11 +54,11 @@ Dlg::Dlg(wxWindow *parent, RTZroute_pi *ppi)
 	pPlugIn = ppi;
 	pParent = parent;
 
-	wxString blank_name = *GetpSharedDataLocation()
-		+ _T("plugins/RTZroute_pi/data/blank.ico");
+	//wxString blank_name = *GetpSharedDataLocation()
+	//	+ _T("plugins/RTZroute_pi/data/blank.ico");
 
-	wxIcon icon(blank_name, wxBITMAP_TYPE_ICO);
-	SetIcon(icon);
+	//wxIcon icon(blank_name, wxBITMAP_TYPE_ICO);
+	//SetIcon(icon);
 	m_choiceSchema->SetSelection(0);
 	
 }
@@ -1338,7 +1338,9 @@ void Dlg::Calculate( wxCommandEvent& event, bool write_file, int Pattern  ){
 	lat1 = 0.0;
 	lon1 = 0.0;
 
-	wxString s;
+	wxString s = "";
+	
+
 
 	if (write_file) {
 		wxFileDialog dlg(this, _("Export RTZroute Positions in GPX file as"), wxEmptyString, defaultFileName, _T("GPX files (*.gpx)|*.gpx|All files (*.*)|*.*"), wxFD_SAVE | wxFD_OVERWRITE_PROMPT);
@@ -1579,7 +1581,9 @@ void Dlg::Calculate( wxCommandEvent& event, bool write_file, int Pattern  ){
 			if (!s.EndsWith(_T(".gpx"))) {
                  s = s + _T(".gpx");
             }
-            wxCharBuffer buffer=s.ToUTF8();
+
+			wxLogMessage("RTZroute: " + s);
+            wxCharBuffer buffer = s.ToUTF8();
             if (dbg) std::cout<< buffer.data()<<std::endl;
             doc.SaveFile( buffer.data() );}
     //} //end of if no error occured
