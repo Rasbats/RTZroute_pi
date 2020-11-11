@@ -731,6 +731,16 @@ void Dlg::CalculateCurvePoints(wxRealPoint ac1, wxRealPoint ac2, wxRealPoint piv
 	
 	Position my_point;
 
+	my_point.lat = wxString::Format(wxT("%f"), ac1.x);
+	my_point.lon = wxString::Format(wxT("%f"), ac1.y);
+	my_point.routepoint = 1;
+	my_point.viz = "1";
+	my_point.radius = "0.0";
+	my_point.wpName = wxString::Format(wxT("%d"), wpt_num);
+	my_points.push_back(my_point);
+
+	wpt_num += 1;
+
 	wxRealPoint lonlatAc1, lonlatAc2, lonlatAcP;
 	lonlatAcP.x = pivotPoint.y;
 	lonlatAcP.y = pivotPoint.x;
@@ -814,8 +824,6 @@ void Dlg::CalculateCurvePoints(wxRealPoint ac1, wxRealPoint ac2, wxRealPoint piv
 	double Xnew;
 	double Ynew;
 
-	bool first = true;
-
 	while (totalAngle < changeBearing) {
 		double s = sin(angle);
 		double c = cos(angle);
@@ -843,12 +851,7 @@ void Dlg::CalculateCurvePoints(wxRealPoint ac1, wxRealPoint ac2, wxRealPoint piv
 		my_point.lat = wxString::Format(wxT("%f"), rllpoint.y);
 		my_point.lon = wxString::Format(wxT("%f"), rllpoint.x);
 		my_point.routepoint = 1;
-		if (first) {
-			my_point.viz = "1";
-			first = false;
-		} else {
-			my_point.viz = "0";
-		}
+		my_point.viz = "0";
 		my_point.radius = "0.0";
 		my_point.wpName = wxString::Format(wxT("%d"), wpt_num);
 		my_points.push_back(my_point);
