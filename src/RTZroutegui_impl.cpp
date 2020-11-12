@@ -149,6 +149,7 @@ bool Dlg::ReadGPX()
 		return false;
 	}
 
+	return false;
 }
 
 void Dlg::ReadRTZ(string schema, string rtz)
@@ -324,7 +325,7 @@ int Dlg::DomExportGPX() {
 	// Write doc into a file
 	wxFileDialog dlg(this, _("Save in GPX format"), wxEmptyString, wxEmptyString, _T("GPX files (*.gpx)|*.gpx|All files (*.*)|*.*"), wxFD_SAVE | wxFD_OVERWRITE_PROMPT);
 	if (dlg.ShowModal() == wxID_CANCEL) {
-		//error_occured = true;     // the user changed idea...
+		// the user changed idea...
 		return 999;
 	}
 	else {
@@ -607,26 +608,31 @@ void Dlg::OnImport(wxCommandEvent& event)
 			if (dlg.GetPath().Right(3) == "gpx" || dlg.GetPath().Right(3) == "GPX") {
 				int r = ImportGPX(dlg.GetPath());
 				if (r != 1) { wxMessageBox("Parse Error"); }
+				return;
 			}
 			else {
 				if (dlg.GetPath().Right(3) == "rtz" || dlg.GetPath().Right(3) == "RTZ") {
 					int r = ImportRTZ(dlg.GetPath());
 					if (r != 1) { wxMessageBox("Parse Error");}
+					return;
 				}
 				else {
 					if (dlg.GetPath().Right(3) == "rt3" || dlg.GetPath().Right(3) == "RT3") {
 						//plugin->ImportRT3(dlg.GetPath());
 						wxMessageBox("Not yet implemented");
+						return;
 					}
 					else {
 						if (dlg.GetPath().Right(3) == "rt4" || dlg.GetPath().Right(3) == "RT4") {
 							//plugin->ImportRT4(dlg.GetPath());
 							wxMessageBox("Not yet implemented");
+							return;
 						}
 						else {
 							if (dlg.GetPath().Right(5) == "route" || dlg.GetPath().Right(5) == "ROUTE") {
 								//plugin->ImportRT4(dlg.GetPath());
 								wxMessageBox("Not yet implemented");
+								return;
 							}
 						}
 					}
@@ -652,25 +658,30 @@ void Dlg::OnExport(wxCommandEvent& event)
 
 			if (dlg.GetPath().Right(3) == "gpx" || dlg.GetPath().Right(3) == "GPX") {
 				ExportGPX(dlg.GetPath());
+				return;
 			}
 			else {
 				if (dlg.GetPath().Right(3) == "rtz" || dlg.GetPath().Right(3) == "RTZ") {
 					ExportRTZ(dlg.GetPath(), dlg.GetFilename());
+					return;
 				}
 				else {
 					if (dlg.GetPath().Right(3) == "rt3" || dlg.GetPath().Right(3) == "RT3") {
 						//plugin->ImportRT3(dlg.GetPath());
 						wxMessageBox("Not yet implemented");
+						return;
 					}
 					else {
 						if (dlg.GetPath().Right(3) == "rt4" || dlg.GetPath().Right(3) == "RT4") {
 							//plugin->ImportRT4(dlg.GetPath());
 							wxMessageBox("Not yet implemented");
+							return;
 						}
 						else {
 							if (dlg.GetPath().Right(5) == "route" || dlg.GetPath().Right(5) == "ROUTE") {
 								//plugin->ImportRT4(dlg.GetPath());
 								wxMessageBox("Not yet implemented");
+								return;
 							}
 						}
 					}
@@ -706,6 +717,7 @@ void Dlg::GetPivotInfo(wxRealPoint rtt, wxRealPoint rtp, wxRealPoint rtn, double
 	double rLat, rLon;
 	PositionBearingDistanceMercator_Plugin(rtt.x, rtt.y, directionPivot, distancePivot, &rLat, &rLon);
 
+
 	wxRealPoint rt;
 	rt.x = rLat; // = { rLat, rLon };
 	rt.y = rLon;
@@ -718,6 +730,16 @@ void Dlg::GetPivotInfo(wxRealPoint rtt, wxRealPoint rtp, wxRealPoint rtn, double
 
 	PositionBearingDistanceMercator_Plugin(rtt.x, rtt.y, bfcp, h, &p1LatLon.x, &p1LatLon.y);
 	PositionBearingDistanceMercator_Plugin(rtt.x, rtt.y, bfcn, h, &p2LatLon.x, &p2LatLon.y);
+
+	/*  //testing accuracy
+	destRhumb(rtt.x, rtt.y, directionPivot, distancePivot, &rLat, &rLon);
+	PlugIn_Waypoint * pPoint = new PlugIn_Waypoint(p1LatLon.x, p1LatLon.y,
+		"", "test", "");
+
+	pPoint->m_IconName = "circle";	
+	AddSingleWaypoint(pPoint, false);
+	
+	*/
 
 	ac1 = p1LatLon;
 	ac2 = p2LatLon;
@@ -872,7 +894,7 @@ void Dlg::CalculateCurvePoints(wxRealPoint ac1, wxRealPoint ac2, wxRealPoint piv
 
 void Dlg::OnGenerateRadiusGPX( wxCommandEvent& event )
 {	
-	Calculate(event, true, 1);
+	Calculate(event);
 }
 
 void Dlg::OnEditGPX(wxCommandEvent& event)
@@ -1265,27 +1287,29 @@ int Dlg::ImportRTZ(wxString myFile) {
 
 	while (pListWaypointsElement != nullptr)
 	{
-
-		string sti = pListWaypointsElement->Attribute("id");
-		my_position.wpId = sti;
+		
+		const char * value = nullptr;
+		value = pListWaypointsElement->Attribute("id");
+		if (value == nullptr)  return XML_ERROR_PARSING_ELEMENT; // must have id
+		my_position.wpId = value;
 		//wxMessageBox(sti);
 
-		string stn = pListWaypointsElement->Attribute("name");
-		my_position.wpName = stn;
-		//wxMessageBox(stn);
-
-		
-		const char* value = pListWaypointsElement->Attribute("radius"); 
-		wxString exists = value;
-
-		if (exists == wxEmptyString){
-			my_position.radius = "0.0";
-			//wxMessageBox("not exists");
+		value = nullptr;
+		value = pListWaypointsElement->Attribute("name");
+		if (value != nullptr) {
+			my_position.wpName = value;
 		}
 		else {
-			string str = pListWaypointsElement->Attribute("radius");
-			my_position.radius = str;
-			//wxMessageBox("exists");
+			my_position.wpName = my_position.wpId; // make name same as id if missing
+		}
+				
+		value = nullptr;
+		value = pListWaypointsElement->Attribute("radius");			
+		if (value != nullptr){
+			my_position.radius = value;			
+		}
+		else {
+			my_position.radius = "0.0";
 		}
 
 		XMLElement * pListPositionElement = pListWaypointsElement->FirstChildElement("position");
@@ -1318,7 +1342,7 @@ int Dlg::ImportRTZ(wxString myFile) {
 
 
 
-void Dlg::Calculate( wxCommandEvent& event, bool write_file, int Pattern  ){			
+void Dlg::Calculate( wxCommandEvent& event){			
 
 	if (my_positions.size() == 0) {
 		wxMessageBox("No waypoints available for export");
@@ -1327,42 +1351,26 @@ void Dlg::Calculate( wxCommandEvent& event, bool write_file, int Pattern  ){
 
 	int theStep = this->m_TurnStep->GetSelection();
 	wxString step_string = this->m_TurnStep->GetString(theStep);
-	double value;
+	double value, value1;
+   
+
 	if (!step_string.ToDouble(&value)) { wxLogMessage("RTZroute: error obtaining turn step"); }
 	turnStep = value;
 
-
-
-	bool error_occured = false;
-	double lat1, lon1;
 	wxString defaultFileName;
-	defaultFileName = this->m_Route->GetValue();
-
-	lat1 = 0.0;
-	lon1 = 0.0;
+	defaultFileName = this->m_Route->GetValue();	
 
 	wxString s = "";
-	
 
-
-	if (write_file) {
-		wxFileDialog dlg(this, _("Export RTZroute Positions in GPX file as"), wxEmptyString, defaultFileName, _T("GPX files (*.gpx)|*.gpx|All files (*.*)|*.*"), wxFD_SAVE | wxFD_OVERWRITE_PROMPT);
-		if (dlg.ShowModal() == wxID_CANCEL) {
-			error_occured = true;     // the user changed idea...
-			return;
-		}
-
-		//dlg.ShowModal();
-		s = dlg.GetPath();
-		if (dlg.GetPath() == wxEmptyString) { error_occured = true; if (dbg) printf("Empty Path\n"); }
+	wxFileDialog dlg(this, _("Export RTZroute Positions in GPX file as"), wxEmptyString, defaultFileName, _T("GPX files (*.gpx)|*.gpx|All files (*.*)|*.*"), wxFD_SAVE | wxFD_OVERWRITE_PROMPT);
+	if (dlg.ShowModal() == wxID_CANCEL) {
+		// the user changed idea...
+		return;
 	}
 
-	//Validate input ranges
-	if (!error_occured) {
-		if (std::abs(lat1) > 90) { error_occured = true; }
-		if (std::abs(lon1) > 180) { error_occured = true; }
-		if (error_occured) wxMessageBox(_("error in input range validation"));
-	}
+	//dlg.ShowModal();
+	s = dlg.GetPath();
+	if (dlg.GetPath() == wxEmptyString) { if (dbg) printf("RTZroute: Empty Path\n"); }
 
 	//Start GPX
 	TiXmlDocument doc;
@@ -1373,232 +1381,197 @@ void Dlg::Calculate( wxCommandEvent& event, bool write_file, int Pattern  ){
 	TiXmlElement * RouteName = new TiXmlElement("name");
 	TiXmlText * text4 = new TiXmlText(this->m_Route->GetValue().ToUTF8());
 
+	doc.LinkEndChild(root);
+	root->SetAttribute("version", "1.1");
+	root->SetAttribute("creator", "RTZroute_pi by Rasbats");
+	root->SetAttribute("xmlns:xsi", "http://www.w3.org/2001/XMLSchema-instance");
+	root->SetAttribute("xmlns", "http://www.topografix.com/GPX/1/1");
+	root->SetAttribute("xmlns:gpxx", "http://www.garmin.com/xmlschemas/GpxExtensions/v3");
+	root->SetAttribute("xsi:schemaLocation", "http://www.topografix.com/GPX/1/1 http://www.topografix.com/GPX/1/1/gpx.xsd");
+	root->SetAttribute("xmlns:opencpn", "http://www.opencpn.org");
+	Route->LinkEndChild(RouteName);
+	RouteName->LinkEndChild(text4);
+
+	TiXmlElement * Extensions = new TiXmlElement("extensions");
+
+	TiXmlElement * StartN = new TiXmlElement("opencpn:start");
+	TiXmlText * text5 = new TiXmlText("Start");
+	Extensions->LinkEndChild(StartN);
+	StartN->LinkEndChild(text5);
+
+	TiXmlElement * EndN = new TiXmlElement("opencpn:end");
+	TiXmlText * text6 = new TiXmlText("End");
+	Extensions->LinkEndChild(EndN);
+	EndN->LinkEndChild(text6);
+
+	TiXmlElement * Speed = new TiXmlElement("opencpn:planned_speed");
+	TiXmlText * text7 = new TiXmlText(mySpeed);
+	Extensions->LinkEndChild(Speed);
+	Speed->LinkEndChild(text7);
+
+	Route->LinkEndChild(Extensions);
 
 
 
-    if (write_file){
-        doc.LinkEndChild( root );
-        root->SetAttribute("version", "1.1");
-        root->SetAttribute("creator", "RTZroute_pi by Rasbats");
-        root->SetAttribute("xmlns:xsi", "http://www.w3.org/2001/XMLSchema-instance");
-		root->SetAttribute("xmlns", "http://www.topografix.com/GPX/1/1");
-        root->SetAttribute("xmlns:gpxx","http://www.garmin.com/xmlschemas/GpxExtensions/v3" );
-        root->SetAttribute("xsi:schemaLocation", "http://www.topografix.com/GPX/1/1 http://www.topografix.com/GPX/1/1/gpx.xsd");
-        root->SetAttribute("xmlns:opencpn","http://www.opencpn.org");
-        Route->LinkEndChild( RouteName );		
-        RouteName->LinkEndChild( text4 );
+	if (dbg) cout << "RTZroute Calculation\n";
+	double speed = 5;
+	int    interval = 1;
 
-        TiXmlElement * Extensions = new TiXmlElement( "extensions" );
+	interval += 1;
 
-        TiXmlElement * StartN = new TiXmlElement( "opencpn:start" );
-        TiXmlText * text5 = new TiXmlText( "Start" );
-        Extensions->LinkEndChild( StartN );
-        StartN->LinkEndChild( text5 );
+	speed = speed * (double)interval;
 
-        TiXmlElement * EndN = new TiXmlElement( "opencpn:end" );
-        TiXmlText * text6 = new TiXmlText( "End" );
-        Extensions->LinkEndChild( EndN );
-        EndN->LinkEndChild( text6 );
+	int n = 0;
 
-		TiXmlElement * Speed = new TiXmlElement("opencpn:planned_speed");
-		TiXmlText * text7 = new TiXmlText(mySpeed);
-		Extensions->LinkEndChild(Speed);	
-	    Speed->LinkEndChild(text7);
+	double lati, loni;
+	double latN[100], lonN[100], rad[100]; // allow for up to 100 waypoints
+	wxString wpName[100];				  // allow for up to 100 waypoints
+	double latF, lonF;
 
-        Route->LinkEndChild( Extensions );
-    }
+	Position my_point;
+	wpt_num = 1;
 
-    switch ( Pattern ) {
-    case 1:
-        {		
-        if (dbg) cout<<"RTZroute Calculation\n";      
-        double speed=5;
-		int    interval=1;		
+	
 
-		interval += 1;
+	for (std::vector<Position>::iterator it = my_positions.begin(); it != my_positions.end(); it++) {
 
-		speed = speed*(double)interval;
-
-        int n=0;
-
-		double lati, loni, latp, latn;
-        double latN[100], lonN[100], rad[100]; // allow for up to 100 waypoints
-		wxString wpName[100];				  // allow for up to 100 waypoints
-		double latF, lonF;					  
-		
-		Position my_point;
-		wpt_num = 1;
-       
-		double value, value1;
-		
-		for(std::vector<Position>::iterator it = my_positions.begin();  it != my_positions.end(); it++){
-       
-			if(!(*it).lat.ToDouble(&value)){ /* error! */ }
-				lati = value;
-			if(!(*it).lon.ToDouble(&value1)){ /* error! */ }
-				loni = value1;
+		if (!(*it).lat.ToDouble(&value)) { /* error! */ }
+		lati = value;
+		if (!(*it).lon.ToDouble(&value1)) { /* error! */ }
+		loni = value1;
 
 
-			latN[n] = lati;
-			lonN[n] = loni;
+		latN[n] = lati;
+		lonN[n] = loni;
 
-			wxString rads = (*it).radius;
-			rads.ToDouble(&value);			
-			rad[n] = value;
+		wxString rads = (*it).radius;
+		rads.ToDouble(&value);
+		rad[n] = value;
 
-			wpName[n] = (*it).wpName;
+		wpName[n] = (*it).wpName;
 
-			n++;//0,1,2,3
-		}
-		
-		//my_positions.clear();
-		my_points.clear();
+		n++;//0,1,2,3
+	}
 
-		n--;//n = 2,  0,1,2
-		int routepoints = n+1; //3
-		
-		double myDist, myBrng, myDistForBrng;
-		int count_pts;
-		double remaining_dist, myLast, route_dist;
-		remaining_dist = 0;
-		route_dist= 0;
-		myLast = 0;
-		myDistForBrng =0;
-		double total_dist = 0;
-		int i,c;
-		bool skip = false;
-		bool inloop = false;
-		bool setF = false;
+	my_points.clear();
 
-		wxRealPoint rp, rn, rtt, rtpivot, pb, pa;
-		double internal_angle;
-		wxString portstbd;
+	n--;//n = 2,  0,1,2					
 
-		latF = latN[0];
-		lonF = lonN[0];
+	int i;
+	bool skip = false;
+	bool inloop = false;
+	bool setF = false;
 
-		// Start of new logic
-		for (i=0; i<n; i++){	// n is number of routepoints		
-			
-			
-			if (i==0){ // First F is a routepoint
-			// save the routepoint
-			
-			my_point.lat = wxString::Format(wxT("%f"),latN[i]);
-			my_point.lon = wxString::Format(wxT("%f"),lonN[i]);
+	wxRealPoint rp, rn, rtt, rtpivot, pb, pa;
+	double internal_angle;
+	wxString portstbd;
+
+	latF = latN[0];
+	lonF = lonN[0];
+
+	// Start of new logic
+	for (i = 0; i < n; i++) {	// n is number of routepoints		
+
+
+		if (i == 0) { // First F is a routepoint
+		// save the routepoint
+
+			my_point.lat = wxString::Format(wxT("%f"), latN[i]);
+			my_point.lon = wxString::Format(wxT("%f"), lonN[i]);
 			my_point.routepoint = 1;
 			my_point.viz = "1";
 			my_point.radius = "0";
-			my_point.wpName =  wpName[i];
+			my_point.wpName = wpName[i];
 
-			my_points.push_back(my_point);	
+			my_points.push_back(my_point);
 			wpt_num += 1;
-  			
+
+		}
+		else {
+
+			if (rad[i] > 0.0) {
+				rtt.x = latN[i];
+				rtt.y = lonN[i];
+
+				rp.x = latN[i - 1];
+				rp.y = lonN[i - 1];
+
+				rn.x = latN[i + 1];
+				rn.y = lonN[i + 1];
+
+				//wxString r = wxString::Format("%f", rad[i]);
+				//wxMessageBox(r);
+
+				GetPivotInfo(rtt, rp, rn, rad[i], pivotPoint, internal_angle, portstbd, ac1, ac2);
+				CalculateCurvePoints(ac1, ac2, pivotPoint, rad[i], internal_angle, portstbd);
 			}
 			else {
-				
-				if (rad[i] > 0.0) {
-					rtt.x = latN[i];
-					rtt.y = lonN[i];
+				my_point.lat = wxString::Format(wxT("%f"), latN[i]);
+				my_point.lon = wxString::Format(wxT("%f"), lonN[i]);
+				my_point.routepoint = 1;
+				my_point.viz = "1";
+				my_point.radius = "0";
+				my_point.wpName = wpName[i];
 
-					rp.x = latN[i - 1];
-					rp.y = lonN[i - 1];
-
-					rn.x = latN[i + 1];
-					rn.y = lonN[i + 1];
-
-					//wxString r = wxString::Format("%f", rad[i]);
-					//wxMessageBox(r);
-
-					GetPivotInfo(rtt, rp, rn, rad[i], pivotPoint, internal_angle, portstbd, ac1, ac2);
-					CalculateCurvePoints(ac1, ac2, pivotPoint, rad[i], internal_angle, portstbd);
-				}
-				else {
-					my_point.lat = wxString::Format(wxT("%f"), latN[i]);
-					my_point.lon = wxString::Format(wxT("%f"), lonN[i]);
-					my_point.routepoint = 1;
-					my_point.viz = "1";
-					my_point.radius = "0";
-					my_point.wpName = wpName[i];
-
-					my_points.push_back(my_point);
-					wpt_num += 1;
-				}
-
-				
+				my_points.push_back(my_point);
+				wpt_num += 1;
 			}
-	
+
+
 		}
-		// print the last routepoint
-		my_point.lat = wxString::Format(wxT("%f"),latN[i]);
-		my_point.lon = wxString::Format(wxT("%f"),lonN[i]);
-		my_point.routepoint = 1;
-		my_point.viz = "1";
-		my_point.radius = "0.0";
-		my_point.wpName = wpName[i];
-		
-		my_points.push_back(my_point);
-		//
 
+	}
+	// print the last routepoint
+	my_point.lat = wxString::Format(wxT("%f"), latN[i]);
+	my_point.lon = wxString::Format(wxT("%f"), lonN[i]);
+	my_point.routepoint = 1;
+	my_point.viz = "1";
+	my_point.radius = "0.0";
+	my_point.wpName = wpName[i];
 
-		for(std::vector<Position>::iterator itOut = my_points.begin();  itOut != my_points.end(); itOut++){
-			//wxMessageBox((*it).lat, _T("*it.lat"));
-		
-        double value, value1;
-		if(!(*itOut).lat.ToDouble(&value)){ /* error! */ }
-			lati = value;
-		if(!(*itOut).lon.ToDouble(&value1)){ /* error! */ }
-			loni = value1;
+	my_points.push_back(my_point);
+
+	for (std::vector<Position>::iterator itOut = my_points.begin(); itOut != my_points.end(); itOut++) {
+		//wxMessageBox((*it).lat, _T("*it.lat"));
+
+		double value, value1;
+		if (!(*itOut).lat.ToDouble(&value)) { /* error! */ }
+		lati = value;
+		if (!(*itOut).lon.ToDouble(&value1)) { /* error! */ }
+		loni = value1;
 
 		wxString s_radius;
-		s_radius = (*itOut).radius;		
+		s_radius = (*itOut).radius;
 
 		//wxMessageBox(s_radius);
-		
-		if ((*itOut).routepoint == 1){
-			if (write_file){Addpoint(Route, wxString::Format(wxT("%f"),lati), wxString::Format(wxT("%f"),loni), (*itOut).wpName ,_T("diamond"),_T("WPT"), (*itOut).viz, s_radius ) ;}
+
+		if ((*itOut).routepoint == 1) {
+			Addpoint(Route, wxString::Format(wxT("%f"), lati), wxString::Format(wxT("%f"), loni), (*itOut).wpName, _T("diamond"), _T("WPT"), (*itOut).viz, s_radius); 
 		}
-		else{
-			if ((*itOut).routepoint == 0){
-				if (write_file){Addpoint(Route, wxString::Format(wxT("%f"),lati), wxString::Format(wxT("%f"),loni), (*itOut).wpName,_T("square"),_T("WPT"), (*itOut).viz, s_radius);}
+		else {
+			if ((*itOut).routepoint == 0) {
+				Addpoint(Route, wxString::Format(wxT("%f"), lati), wxString::Format(wxT("%f"), loni), (*itOut).wpName, _T("square"), _T("WPT"), (*itOut).viz, s_radius); 
 			}
 		}
-		
-		}
-		my_points.clear();		
-        break;
-		
-		}
 
-    
-      default:
-      {            // Note the colon, not a semicolon
-        cout<<"Error, bad input, quitting\n";
-        break;
-      }
-    }
+	}
+	my_points.clear();
 
-       if (write_file){
-            root->LinkEndChild( Route );
-            // check if string ends with .gpx or .GPX
-			if (!s.EndsWith(_T(".gpx"))) {
-                 s = s + _T(".gpx");
-            }
 
-			wxLogMessage("RTZroute: " + s);
-            wxCharBuffer buffer = s.ToUTF8();
-            if (dbg) std::cout<< buffer.data()<<std::endl;
-            doc.SaveFile( buffer.data() );}
-    //} //end of if no error occured
+	root->LinkEndChild(Route);
+	// check if string ends with .gpx or .GPX
+	if (!s.EndsWith(_T(".gpx"))) {
+		s = s + _T(".gpx");
+	}
 
-	   this->m_listBoxWaypoints->Clear(); // prevent user making a second export of the same waypoints ????? 
-	   my_positions.clear();
-	   ClearTextboxes();
+	//wxLogMessage("RTZroute: " + s);
+	wxCharBuffer buffer = s.ToUTF8();
+	if (dbg) std::cout << buffer.data() << std::endl;
+	doc.SaveFile(buffer.data());
 
-    if (error_occured==true)  {
-        wxLogMessage(_("Error in calculation. Please check input!") );
-        wxMessageBox(_("Error in calculation. Please check input!") );
-    }
+	this->m_listBoxWaypoints->Clear(); // prevent user making a second export of the same waypoints ????? 
+	my_positions.clear();
+	ClearTextboxes();
   
 }
 
@@ -1623,7 +1596,10 @@ void Dlg::FillWaypointListbox()
 
 void Dlg::GetWaypointData(wxCommandEvent& event) {
 
-		wxString thisWaypoint;
+	if (m_listBoxWaypoints->IsEmpty()) {
+		return;
+	}
+	    wxString thisWaypoint;
 
 		int sl = this->m_listBoxWaypoints->GetSelection();
 		if (sl == wxNOT_FOUND) {
@@ -1786,7 +1762,6 @@ void Dlg::SaveGPX() {
 	Route->LinkEndChild(Extensions);
 
 	double lati, loni;
-	double latN[100], lonN[100];
 
 	Position my_point;
 	wxString s_radius;
@@ -1872,7 +1847,6 @@ void Dlg::ExportGPX(wxString myFile) {
 	Route->LinkEndChild(Extensions);
 
 	double lati, loni;
-	double latN[100], lonN[100];
 
 	Position my_point;
 

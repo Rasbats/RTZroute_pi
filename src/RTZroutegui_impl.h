@@ -206,7 +206,7 @@ public:
 	vector<Position> my_points;
 	vector<Position> draftPositions;
 
-	void Calculate(wxCommandEvent& event, bool Export, int Pattern);
+	void Calculate(wxCommandEvent& event);
 	void Addpoint(TiXmlElement* Route, wxString ptlat, wxString ptlon, wxString ptname, wxString ptsym, wxString pttype, wxString ptviz, wxString ptradius);
 
 	void FillWaypointListbox();
