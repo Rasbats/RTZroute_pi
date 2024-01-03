@@ -1,86 +1,124 @@
-##---------------------------------------------------------------------------
-## Author:      Rasbats aka. Mike Rossiter
-## Copyright:
-## License:     wxWidgets License
-##---------------------------------------------------------------------------
+# ~~~
+# Summary:      Main plugin build script
+# Copyright (c) 2020-2021 Mike Rossiter
+# License:      GPLv3+
+# ~~~
 
-# define minimum cmake version
-CMAKE_MINIMUM_REQUIRED(VERSION 2.6.2)
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 3 of the License, or
+# (at your option) any later version.
 
-PROJECT(RTZroute_pi)
-
-SET(PACKAGE_NAME RTZroute_pi)
-SET(VERBOSE_NAME RTZroute)
-SET(TITLE_NAME RTZroute)
-SET(CPACK_PACKAGE_CONTACT "Mike Rossiter")
-
-SET(VERSION_MAJOR "0")
-SET(VERSION_MINOR "5")
-
-SET(NAME_SUFFIX "ov50")
-
-set (CMAKE_CXX_STANDARD 11)
-
-#SET(CMAKE_BUILD_TYPE Debug)
-SET( wxWidgets_USE_DEBUG OFF)
-SET( wxWidgets_USE_UNICODE ON)
-SET( wxWidgets_USE_UNIVERSAL OFF)
-SET( wxWidgets_USE_STATIC OFF)
-
-#SET(CMAKE_BUILD_TYPE Debug)
-OPTION(RTZroute_USE_SVG "Use SVG graphics" ON)
-
-INCLUDE("cmake/PluginConfigure.cmake")
-
-IF(WIN32)
-	SET(xercesc ${CMAKE_SOURCE_DIR}/src/xercesc)
-	SET(xercesc "${PARENT}.lib")
-
-	LINK_DIRECTORIES(${CMAKE_SOURCE_DIR}/src/xercesc)
-	INCLUDE_DIRECTORIES(${CMAKE_SOURCE_DIR}/src/xercesc)
-	INCLUDE_DIRECTORIES(${CMAKE_SOURCE_DIR}/src/xercesc/include)
-	
-ENDIF(WIN32)
+# -------- Cmake setup ---------
+#
+cmake_minimum_required(VERSION 3.12.0)
+include(${CMAKE_SOURCE_DIR}/cmake/CmakeSetup.cmake NO_POLICY_SCOPE)
+message(STATUS "Cmake version: ${CMAKE_VERSION}.")
 
 
-IF(RTZroute_USE_SVG)
-  ADD_DEFINITIONS(-DRTZroute_USE_SVG)
-ENDIF(RTZroute_USE_SVG)
+# -------- Build setup  --------
+#
+include(PluginOptions)
+if (BUILD_TYPE)
+  message(STATUS "Building: ${BUILD_TYPE}")
+else ()
+  message(STATUS "Configuring")
+endif ()
 
-SET(SRC_RTZroute
-        src/RTZroute_pi.h
-        src/RTZroute_pi.cpp
-        src/icons.h
-        src/icons.cpp
-	    src/RTZroutegui.h
-	    src/RTZroutegui.cpp
-	    src/RTZroutegui_impl.cpp
-	    src/RTZroutegui_impl.h
-		src/load-grammar-dom.cpp
-		src/load-grammar-dom.h
-		src/load-grammar-sax.cpp
-		src/load-grammar-sax.h
-	    src/NavFunc.h
-	    src/NavFunc.cpp
-		src/ocpn_plugin.h
-		src/tinyxml.cpp
-        src/tinyxmlerror.cpp
-        src/tinyxmlparser.cpp
-        src/tinyxml.h
-		src/tinyxml2.cpp
-		src/tinyxml2.h
-	)
+# -------- Plugin setup ----------
+#
+include(Plugin.cmake)
+
+# -------- Setup completed, build the plugin --------
+#
+project(${PKG_NAME} VERSION ${PKG_VERSION})
+include(PluginCompiler)
+
+add_library(${CMAKE_PROJECT_NAME} SHARED EXCLUDE_FROM_ALL ${SRC})
+include_directories(BEFORE ${CMAKE_BINARY_DIR}/include)
+
+add_subdirectory("opencpn-libs/${PKG_API_LIB}")
+target_link_libraries(${CMAKE_PROJECT_NAME} ocpn::api)
+
+set(VERSION_MAJOR ${PROJECT_VERSION_MAJOR})
+set(VERSION_MINOR ${PROJECT_VERSION_MINOR})
+set(VERSION_PATCH ${PROJECT_VERSION_PATCH})
+if (PROJECT_VERSION_TWEAK STREQUAL "")
+  set(PROJECT_VERSION_TWEAK 0)
+endif ()
 
 
-ADD_LIBRARY(${PACKAGE_NAME} SHARED ${SRC_RTZroute})
+set(PACKAGE_NAME ${CMAKE_PROJECT_NAME})
 
-ADD_DEFINITIONS(-DTIXML_USE_STL)
+# Create the minimim ocpn version id string like ov50
+string(REGEX REPLACE "\([0-9]\)\.\([0-9]\).*" "ov\\1\\2"
+       OCPN_MIN_VERSION ${API_OCPN_MIN_VERSION})
 
-IF(WIN32)
-	FIND_LIBRARY(xerces-c_3 ${CMAKE_SOURCE_DIR}/src/xercesc)
-	TARGET_LINK_LIBRARIES(${PACKAGE_NAME} xerces-c_3)
-ENDIF(WIN32)
+if (COMMAND late_init)
+  late_init()
+endif ()
 
-INCLUDE("cmake/PluginInstall.cmake")
-INCLUDE("cmake/PluginLocalization.cmake")
-INCLUDE("cmake/PluginPackage.cmake")
+# Configure the flatpak manifest
+file(
+  GLOB manifest ${PROJECT_SOURCE_DIR}/flatpak/org.opencpn.OpenCPN.Plugin.*.yaml
+)
+include(ConfigureManifest)
+configure_manifest(${manifest} _new_manifest)
+
+# Set up targets. Targets sets up new targets with BUILD_TYPE set to
+# 'flatpak', 'android' or 'tarball'. The initial call without BUILD_TYPE ends
+# here.
+#
+include(Targets)
+create_targets(${_new_manifest})
+
+if ("${BUILD_TYPE}" STREQUAL "")
+  return ()
+endif ()
+
+ 
+if (NOT ${BUILD_TYPE} STREQUAL "flatpak")
+  # Build package as required (flatpak already dealt with).
+  #
+  if (APPLE)
+    include(MacosWxwidgets)
+  endif ()
+  include(PluginInstall)
+  if (QT_ANDROID)
+    include(AndroidLibs)
+  else ()
+    include(PluginLibs)
+  endif ()
+  include(PluginLocalization)
+
+  include_directories(BEFORE ${CMAKE_BINARY_DIR}/include)
+ 
+  if (COMMAND add_plugin_libraries)
+    add_plugin_libraries()
+  endif ()
+
+endif ()
+
+configure_file(
+  ${CMAKE_SOURCE_DIR}/config.h.in ${CMAKE_BINARY_DIR}/include/config.h
+  @ONLY
+)
+
+configure_file(
+  # The cloudsmith upload script
+  ${CMAKE_SOURCE_DIR}/ci/upload.sh.in ${CMAKE_BINARY_DIR}/upload.sh
+  @ONLY
+)
+configure_file(
+  # The cloudsmith upload script, windows bat file.
+  ${CMAKE_SOURCE_DIR}/ci/upload.bat.in ${CMAKE_BINARY_DIR}/upload.bat
+  @ONLY
+)
+
+set(checksum "@checksum@")
+configure_file(
+  # The XML metadata file
+  ${CMAKE_SOURCE_DIR}/plugin.xml.in
+  ${CMAKE_BINARY_DIR}/${pkg_displayname}.xml.in
+  @ONLY
+)
