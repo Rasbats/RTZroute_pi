@@ -55,7 +55,8 @@
 #include <wx/wfstream.h>
 #include <wx/txtstrm.h>
 #include "tinyxml2.h"
-
+#include "load-grammar-sax.h"
+#include "load-grammar-dom.h"
 
 using namespace std;
 
