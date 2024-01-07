@@ -67,6 +67,7 @@ macro(late_init)
   # Perform initialization after the PACKAGE_NAME library, compilers
   # and ocpn::api is available.
 
+
 endmacro ()
 
 macro(add_plugin_libraries)

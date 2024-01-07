@@ -93,6 +93,18 @@ if (NOT ${BUILD_TYPE} STREQUAL "flatpak")
 
   include_directories(BEFORE ${CMAKE_BINARY_DIR}/include)
 
+    SET(xercesc ${CMAKE_SOURCE_DIR}/src/xercesc)
+
+
+
+    LINK_DIRECTORIES(${CMAKE_SOURCE_DIR}/src/xercesc)
+    INCLUDE_DIRECTORIES(${CMAKE_SOURCE_DIR}/src/xercesc)
+    INCLUDE_DIRECTORIES(${CMAKE_SOURCE_DIR}/src/xercesc/include)
+
+    FIND_LIBRARY(xerces-c_3 ${CMAKE_SOURCE_DIR}/src/xercesc/lib)
+    TARGET_LINK_LIBRARIES(${PACKAGE_NAME} xerces-c_3)
+
+
   if (COMMAND add_plugin_libraries)
     add_plugin_libraries()
   endif ()

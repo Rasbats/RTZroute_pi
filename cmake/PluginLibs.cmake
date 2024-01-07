@@ -62,6 +62,10 @@ if (WIN32)
   endif ()
 endif ()
 
+set ( XercesC_INCLUDE_DIR "${CMAKE_SOURCE_DIR}/src/xercesc/include/" )
+set ( XercesC_LIBRARY "${CMAKE_SOURCE_DIR}/src/xercesc/lib/")
+set ( XercesC_VERSION "3.2.3")
+
 #
 # wxWidgets
 #
