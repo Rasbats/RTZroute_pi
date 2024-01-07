@@ -21,10 +21,7 @@ set(OCPN_TEST_REPO
 #
 #
 # -------  Plugin setup --------
-#IF(WIN32)
-    FIND_LIBRARY(xerces-c_3 ${CMAKE_SOURCE_DIR}/src/xercesc)
-    TARGET_LINK_LIBRARIES(${PACKAGE_NAME} xerces-c_3)
-ENDIF(WIN32)
+
 set(PKG_NAME RTZroute_pi)
 set(PKG_VERSION  0.0.1)
 set(PKG_PRERELEASE "")  # Empty, or a tag like 'beta'
@@ -53,12 +50,15 @@ set(SRC
         src/RTZroutegui.cpp
         src/RTZroutegui_impl.cpp
         src/RTZroutegui_impl.h
-        src/load-grammar-dom.cpp
-        src/load-grammar-dom.h
-        src/load-grammar-sax.cpp
-        src/load-grammar-sax.h
+        #src/load-grammar-dom.cpp
+        #src/load-grammar-dom.h
+        #src/load-grammar-sax.cpp
+        #src/load-grammar-sax.h
         src/NavFunc.h
         src/NavFunc.cpp
+        src/tinyxml2.cpp
+        src/tinyxml2.h
+
 )
 
 set(PKG_API_LIB api-18)  #  A dir in opencpn-libs/ e. g., api-17 or api-16
@@ -66,22 +66,6 @@ set(PKG_API_LIB api-18)  #  A dir in opencpn-libs/ e. g., api-17 or api-16
 macro(late_init)
   # Perform initialization after the PACKAGE_NAME library, compilers
   # and ocpn::api is available.
-
-  IF(WIN32)
-    SET(xercesc ${CMAKE_SOURCE_DIR}/src/xercesc)
-    SET(xercesc "${PARENT}.lib")
-
-    LINK_DIRECTORIES(${CMAKE_SOURCE_DIR}/src/xercesc)
-    INCLUDE_DIRECTORIES(${CMAKE_SOURCE_DIR}/src/xercesc)
-    INCLUDE_DIRECTORIES(${CMAKE_SOURCE_DIR}/src/xercesc/include)
-
-ENDIF(WIN32)
-
-IF(WIN32)
-    FIND_LIBRARY(xerces-c_3 ${CMAKE_SOURCE_DIR}/src/xercesc)
-    TARGET_LINK_LIBRARIES(${PACKAGE_NAME} xerces-c_3)
-ENDIF(WIN32)
-
 
 endmacro ()
 

@@ -41,7 +41,8 @@
 #include "RTZroutegui_impl.h"
 #include "RTZroutegui.h"
 
-#include "version.h"
+#include "config.h"
+
 #include <wx/slider.h>
 
 #define     MY_API_VERSION_MAJOR    1

@@ -158,13 +158,16 @@ bool RTZroute_pi::DeInit(void)
 }
 
 int RTZroute_pi::GetAPIVersionMajor()
-{
-      return MY_API_VERSION_MAJOR;
+{ 
+  return atoi(API_VERSION); 
+
 }
 
 int RTZroute_pi::GetAPIVersionMinor()
 {
-      return MY_API_VERSION_MINOR;
+    std::string v(API_VERSION);
+    size_t dotpos = v.find('.');
+    return atoi(v.substr(dotpos + 1).c_str());
 }
 
 int RTZroute_pi::GetPlugInVersionMajor()
@@ -176,6 +179,14 @@ int RTZroute_pi::GetPlugInVersionMinor()
 {
       return PLUGIN_VERSION_MINOR;
 }
+
+int GetPlugInVersionPatch() { return PLUGIN_VERSION_PATCH; }
+
+int GetPlugInVersionPost() { return PLUGIN_VERSION_TWEAK; };
+
+const char *GetPlugInVersionPre() { return PKG_PRERELEASE; }
+
+const char *GetPlugInVersionBuild() { return PKG_BUILD_INFO; }
 
 wxBitmap *RTZroute_pi::GetPlugInBitmap()
 {

@@ -10,7 +10,7 @@
 wxBitmap *_img_RTZroute_pi;
 wxBitmap *_img_RTZroute;
 
-#ifdef RTZroute_USE_SVG
+#ifdef ocpnUSE_SVG
 #include "ocpn_plugin.h"
 wxString _svg_RTZroute;
 wxString _svg_RTZroute_toggled;
@@ -29,12 +29,13 @@ void initialize_images(void)
 		_img_RTZroute = new wxBitmap(wxImage(sm));
 	}
 */	
-#ifdef RTZroute_USE_SVG
+#ifdef ocpnUSE_SVG
 	wxFileName fn;
-	fn.SetPath(*GetpSharedDataLocation());
-	fn.AppendDir(_T("plugins"));
-	fn.AppendDir(_T("RTZroute_pi"));
-	fn.AppendDir(_T("data"));
+  wxString tmp_path;
+
+  tmp_path = GetPluginDataDir("RTZroute_pi");
+  fn.SetPath(tmp_path);
+  fn.AppendDir("data");
 	fn.SetFullName(_T("RTZroute_pi.svg"));
 	_svg_RTZroute = fn.GetFullPath();
 	fn.SetFullName(_T("RTZroute_pi_toggled.svg"));
