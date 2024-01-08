@@ -345,7 +345,9 @@ int Dlg::ExportRTZ(wxString myFile, wxString myFileName) {
     versn = "1.0";
   } else if (selection == 1) {
     versn = "1.1";
-  }
+  } else if (selection == 2) {
+    versn = "1.2";
+  } 
 
   // Create Main level XML container
   tinyxml2::XMLDocument xmlDoc;
@@ -365,6 +367,12 @@ int Dlg::ExportRTZ(wxString myFile, wxString myFileName) {
         "\"1.0\" "
         "encoding="
         "\"UTF-8\"");
+  } else if (selection == 2) {
+    decl->SetValue(
+        "xml version="
+        "\"1.0\" "
+        "encoding="
+        "\"UTF-8\"");
   }
 
   xmlDoc.LinkEndChild(decl);
@@ -377,6 +385,8 @@ int Dlg::ExportRTZ(wxString myFile, wxString myFileName) {
     value = "http://www.cirm.org/RTZ/1/0";
   } else if (selection == 1) {
     value = "http://www.cirm.org/RTZ/1/1";
+  } else if (selection == 2) {
+    value = "http://www.cirm.org/RTZ/1/2";
   }
 
   char* sv = (const_cast<char*>((const char*)versn.mb_str()));
@@ -424,6 +434,11 @@ int Dlg::ExportRTZ(wxString myFile, wxString myFileName) {
     waypoints->InsertEndChild(m_waypoint);
 
     m_waypoint->SetAttribute("id", (*itOut).wpId.mb_str());
+
+     if (selection == 2) {
+      m_waypoint->SetAttribute("revision", "1");  
+     }
+
     m_waypoint->SetAttribute("name", (*itOut).wpName.mb_str());
     m_waypoint->SetAttribute("radius", (*itOut).radius);
 
@@ -1849,7 +1864,6 @@ void Dlg::ValidateRTZ(string schema, string rtz) {
   wxString fname = fn.GetFullPath();
 
   wxString schemaPlus =  fname  + wxFileName::GetPathSeparator() + mySchema;
-  wxMessageBox(schemaPlus); 
 
   string s_schema = schemaPlus.mb_str();
 

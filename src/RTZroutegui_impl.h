@@ -265,6 +265,7 @@ public:
     wxString routeName;
     wxString radius;
     wxString wpId;
+    wxString revision;
     wxString wpName;
     wxString wpSym;
     wxString planned_speed;

@@ -1,5 +1,5 @@
 ///////////////////////////////////////////////////////////////////////////
-// C++ code generated with wxFormBuilder (version Oct 26 2018)
+// C++ code generated with wxFormBuilder (version 3.10.1-0-g8feb16b3)
 // http://www.wxformbuilder.org/
 //
 // PLEASE DO *NOT* EDIT THIS FILE!
@@ -15,10 +15,10 @@
 #include <wx/font.h>
 #include <wx/colour.h>
 #include <wx/settings.h>
+#include <wx/button.h>
 #include <wx/bitmap.h>
 #include <wx/image.h>
 #include <wx/icon.h>
-#include <wx/button.h>
 #include <wx/statline.h>
 #include <wx/sizer.h>
 #include <wx/choice.h>
@@ -65,7 +65,7 @@ class m_Dialog : public wxDialog
 		wxButton* m_button31111;
 		wxButton* m_button311112;
 
-		// Virtual event handlers, overide them in your derived class
+		// Virtual event handlers, override them in your derived class
 		virtual void OnClose( wxCloseEvent& event ) { event.Skip(); }
 		virtual void OnTestFunction( wxCommandEvent& event ) { event.Skip(); }
 		virtual void OnEditGPX( wxCommandEvent& event ) { event.Skip(); }
@@ -97,6 +97,7 @@ class m_Dialog : public wxDialog
 		wxTextCtrl* m_textCtrlShowResult;
 
 		m_Dialog( wxWindow* parent, wxWindowID id = wxID_ANY, const wxString& title = wxT("RTZroute"), const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxDefaultSize, long style = wxDEFAULT_DIALOG_STYLE|wxRESIZE_BORDER );
+
 		~m_Dialog();
 
 };

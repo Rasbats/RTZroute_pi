@@ -1,5 +1,5 @@
 ///////////////////////////////////////////////////////////////////////////
-// C++ code generated with wxFormBuilder (version Oct 26 2018)
+// C++ code generated with wxFormBuilder (version 3.10.1-0-g8feb16b3)
 // http://www.wxformbuilder.org/
 //
 // PLEASE DO *NOT* EDIT THIS FILE!
@@ -25,7 +25,7 @@ m_Dialog::m_Dialog( wxWindow* parent, wxWindowID id, const wxString& title, cons
 
 	m_staticText1511 = new wxStaticText( m_panel0, wxID_ANY, wxT("Options"), wxDefaultPosition, wxDefaultSize, 0 );
 	m_staticText1511->Wrap( -1 );
-	m_staticText1511->SetFont( wxFont( 16, wxFONTFAMILY_SWISS, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_BOLD, false, wxT("Arial") ) );
+	m_staticText1511->SetFont( wxFont( 16, wxFONTFAMILY_SWISS, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_NORMAL, false, wxT("Arial") ) );
 
 	bSizer1311->Add( m_staticText1511, 0, wxALIGN_CENTER_HORIZONTAL|wxALL, 5 );
 
@@ -82,7 +82,7 @@ m_Dialog::m_Dialog( wxWindow* parent, wxWindowID id, const wxString& title, cons
 	wxBoxSizer* bSizer13;
 	bSizer13 = new wxBoxSizer( wxVERTICAL );
 
-	wxString m_choiceSchemaChoices[] = { wxT("RTZ_Schema_version_1_0"), wxT("RTZ_Schema_version_1_1"), wxEmptyString };
+	wxString m_choiceSchemaChoices[] = { wxT("RTZ_Schema_version_1_0"), wxT("RTZ_Schema_version_1_1"), wxT("RTZ_Schema_version_1_2"), wxEmptyString };
 	int m_choiceSchemaNChoices = sizeof( m_choiceSchemaChoices ) / sizeof( wxString );
 	m_choiceSchema = new wxChoice( m_panel0, wxID_ANY, wxDefaultPosition, wxDefaultSize, m_choiceSchemaNChoices, m_choiceSchemaChoices, 0 );
 	m_choiceSchema->SetSelection( 0 );
@@ -104,7 +104,7 @@ m_Dialog::m_Dialog( wxWindow* parent, wxWindowID id, const wxString& title, cons
 
 	m_staticText15111 = new wxStaticText( m_panel0, wxID_ANY, wxT("Files"), wxDefaultPosition, wxDefaultSize, 0 );
 	m_staticText15111->Wrap( -1 );
-	m_staticText15111->SetFont( wxFont( 16, wxFONTFAMILY_SWISS, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_BOLD, false, wxT("Arial") ) );
+	m_staticText15111->SetFont( wxFont( 16, wxFONTFAMILY_SWISS, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_NORMAL, false, wxT("Arial") ) );
 
 	bSizer71->Add( m_staticText15111, 0, wxALIGN_CENTER_HORIZONTAL|wxALL, 5 );
 
@@ -144,7 +144,7 @@ m_Dialog::m_Dialog( wxWindow* parent, wxWindowID id, const wxString& title, cons
 
 	m_staticText11 = new wxStaticText( m_panel1, wxID_ANY, wxT("Waypoints"), wxDefaultPosition, wxDefaultSize, 0 );
 	m_staticText11->Wrap( -1 );
-	m_staticText11->SetFont( wxFont( 16, wxFONTFAMILY_SWISS, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_BOLD, false, wxT("Arial") ) );
+	m_staticText11->SetFont( wxFont( 16, wxFONTFAMILY_SWISS, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_NORMAL, false, wxT("Arial") ) );
 
 	bSizer12->Add( m_staticText11, 0, wxALL, 5 );
 
