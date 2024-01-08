@@ -45,8 +45,6 @@
 
 #include <wx/slider.h>
 
-#define     MY_API_VERSION_MAJOR    1
-#define     MY_API_VERSION_MINOR    7
 
 //----------------------------------------------------------------------------------------------------------
 //    The PlugIn Class Definition
@@ -56,7 +54,7 @@
 
 class Dlg;
 
-class RTZroute_pi : public opencpn_plugin_17
+class RTZroute_pi : public opencpn_plugin_118
 {
 public:
       RTZroute_pi(void *ppimgr);

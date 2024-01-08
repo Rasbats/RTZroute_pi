@@ -61,43 +61,36 @@ extern "C" DECL_EXP void destroy_pi(opencpn_plugin* p)
 //          PlugIn initialization and de-init
 //
 //---------------------------------------------------------------------------------------------------------
-static wxBitmap load_plugin(const char *icon_name, const char *api_name) {
-    wxBitmap bitmap;
-    wxFileName fn;
-    auto path = GetPluginDataDir(api_name);
-    fn.SetPath(path);
-    fn.AppendDir("data");
-    fn.SetName(icon_name);
-#ifdef ocpnUSE_SVG
-    wxLogDebug("Loading SVG icon");
-    fn.SetExt("svg");
-    const static int ICON_SIZE = 48;  // FIXME: Needs size from GUI
-    bitmap = GetBitmapFromSVGFile(fn.GetFullPath(), ICON_SIZE, ICON_SIZE);
-#else
-    wxLogDebug("Loading png icon");
-    fn.SetExt("png");
-    path = fn.GetFullPath();
-    if (!wxImage::CanRead(path)) {
-      wxLogDebug("Initiating image handlers.");
-      wxInitAllImageHandlers();
-    }
-    wxImage panelIcon(path);
-    bitmap = wxBitmap(panelIcon);
-#endif
-    wxLogDebug("Icon loaded, result: %s", bitmap.IsOk() ? "ok" : "fail");
-    return bitmap;
-}
-
- 
-
 
 RTZroute_pi::RTZroute_pi(void *ppimgr)
-      :opencpn_plugin_17 (ppimgr)
+      :opencpn_plugin_118 (ppimgr)
 {
       // Create the PlugIn icons
       initialize_images();
 
-	   m_panelBitmap = load_plugin("RTZroute_panel_icon", "RTZroute_pi");
+      wxFileName fn;
+
+      auto path = GetPluginDataDir("RTZroute_pi");
+      fn.SetPath(path);
+      fn.AppendDir("data");
+      fn.SetFullName("RTZroute_panel_icon.png");
+
+      path = fn.GetFullPath();
+
+      wxInitAllImageHandlers();
+
+      wxLogDebug(wxString("Using icon path: ") + path);
+      if (!wxImage::CanRead(path)) {
+      wxLogDebug("Initiating image handlers.");
+      wxInitAllImageHandlers();
+      }
+      wxImage panelIcon(path);
+      if (panelIcon.IsOk())
+      m_panelBitmap = wxBitmap(panelIcon);
+      else
+      wxLogWarning("aisRX panel icon has NOT been loaded");
+
+	   
 	  m_bShowRTZroute = false;
 }
 
@@ -129,7 +122,7 @@ int RTZroute_pi::Init(void)
       //    This PlugIn needs a toolbar icon, so request its insertion
 	if(m_bRTZrouteShowIcon)
 
-#ifdef RTZroute_USE_SVG
+#ifdef ocpnUSE_SVG
 		m_leftclick_tool_id = InsertPlugInToolSVG(_T("RTZroute"), _svg_RTZroute, _svg_RTZroute, _svg_RTZroute_toggled,
 			wxITEM_CHECK, _("RTZroute"), _T(""), NULL, CALCULATOR_TOOL_POSITION, 0, this);
 #else

@@ -12,7 +12,7 @@ extern void initialize_images(void);
 extern wxBitmap *_img_RTZroute_pi;
 extern wxBitmap *_img_RTZroute;
 
-#ifdef RTZroute_USE_SVG
+#ifdef ocpnUSE_SVG
 extern wxString _svg_RTZroute;
 extern wxString _svg_RTZroute_toggled;
 #endif
