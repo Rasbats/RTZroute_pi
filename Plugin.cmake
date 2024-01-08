@@ -58,7 +58,6 @@ set(SRC
         src/NavFunc.cpp
         src/tinyxml2.cpp
         src/tinyxml2.h
-
 )
 
 set(PKG_API_LIB api-18)  #  A dir in opencpn-libs/ e. g., api-17 or api-16
@@ -72,8 +71,6 @@ endmacro ()
 
 macro(add_plugin_libraries)
   # Add libraries required by this plugin
-   # add_subdirectory("${CMAKE_SOURCE_DIR}/libs/xerces-c-3.2.5")
-  #target_link_libraries(${PACKAGE_NAME} ocpn::xerces)
 
   add_subdirectory("${CMAKE_SOURCE_DIR}/opencpn-libs/tinyxml")
   target_link_libraries(${PACKAGE_NAME} ocpn::tinyxml)

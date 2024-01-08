@@ -101,6 +101,12 @@ if (NOT ${BUILD_TYPE} STREQUAL "flatpak")
     INCLUDE_DIRECTORIES(${CMAKE_SOURCE_DIR}/src/xercesc)
     INCLUDE_DIRECTORIES(${CMAKE_SOURCE_DIR}/src/xercesc/include)
 
+
+# Add the static library 'Lib.lib', marking it as an IMPORT.
+add_library(xerces-c_3 STATIC IMPORTED)
+# Tell CMake where to find the library.
+set_target_properties(xerces-c_3 PROPERTIES IMPORTED_LOCATION ${CMAKE_SOURCE_DIR}/src/xercesc/lib/xerces-c_3.lib)
+
     FIND_LIBRARY(xerces-c_3 ${CMAKE_SOURCE_DIR}/src/xercesc/lib)
     TARGET_LINK_LIBRARIES(${PACKAGE_NAME} xerces-c_3)
 
