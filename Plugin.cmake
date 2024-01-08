@@ -13,7 +13,7 @@
 # -------- Options ----------
 
 set(OCPN_TEST_REPO
-    "mike-rossiter/RTZroute-alpha"
+    "mike-rossiter/rtzroute-alpha"
     CACHE STRING "Default repository for untagged builds"
 )
 
